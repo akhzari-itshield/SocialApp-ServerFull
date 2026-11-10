@@ -118,8 +118,8 @@ social_server/
 ### گام ۱: کلون کردن پروژه
 
 ```
-git clone https://github.com/akhzari-itshield/SocialApp-Server.git
-cd SocialApp-Server
+git clone https://github.com/akhzari-itshield/SocialApp-ServerFull.git
+cd SocialApp-ServerFull
 ```
 ### گام ۲:نصب وابستگی‌ها
 ```
