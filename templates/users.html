@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}کاربران{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3>کاربران</h3>
+    <form method="get" class="d-flex" style="width: 320px;">
+        <input type="text" name="q" value="{{ q }}" class="form-control me-2"
+               placeholder="جستجو (شماره یا نام)">
+        <button class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
+    </form>
+</div>
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead><tr>
+                <th>ID</th><th>شماره تلفن</th><th>نام نمایشی</th>
+                <th>وضعیت</th><th>OTP</th><th>عملیات</th>
+            </tr></thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ u.id }}</td>
+                    <td>{{ u.phone_number }}</td>
+                    <td>{{ u.display_name or '-' }}</td>
+                    <td>
+                        {% if u.is_active %}<span class="badge bg-success">فعال</span>
+                        {% else %}<span class="badge bg-danger">غیرفعال</span>{% endif %}
+                    </td>
+                    <td>
+                        {% if u.otp_code and u.otp_expires_at %}
+                        <code class="text-warning">{{ u.otp_code }}</code>
+                        <small class="text-muted d-block">{{ u.otp_expires_at.strftime('%H:%M') }}</small>
+                        {% else %}<span class="text-muted">-</span>{% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="/panel/users/{{ u.id }}/toggle" class="d-inline">
+                            <button class="btn btn-sm {% if u.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %}">
+                                {% if u.is_active %}<i class="bi bi-pause"></i> غیرفعال
+                                {% else %}<i class="bi bi-play"></i> فعال{% endif %}
+                            </button>
+                        </form>
+                        <form method="post" action="/panel/users/{{ u.id }}/generate-otp" class="d-inline">
+                            <button class="btn btn-sm btn-outline-info"><i class="bi bi-key"></i> OTP</button>
+                        </form>
+                        <a href="/panel/users/{{ u.id }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i> جزئیات
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="text-center text-muted py-4">کاربری یافت نشد</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

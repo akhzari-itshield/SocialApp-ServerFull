@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}چت {{ chat.id }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h3>چت #{{ chat.id }} — {{ chat.title or chat.type }}</h3>
+    <a href="/panel/chats" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-right"></i> بازگشت
+    </a>
+</div>
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-white"><strong>اعضا ({{ chat.members | length }})</strong></div>
+            <ul class="list-group list-group-flush">
+                {% for m in chat.members %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ m.display_name or m.phone_number }}</span>
+                    <a href="/panel/users/{{ m.id }}" class="text-primary small">#{{ m.id }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-white">
+                <strong>آخرین پیام‌ها ({{ messages | length }})</strong>
+            </div>
+            <div class="card-body" style="max-height: 600px; overflow-y: auto;">
+                {% for m in messages %}
+                <div class="border-bottom pb-2 mb-3">
+                    <div class="d-flex justify-content-between">
+                        <strong>کاربر #{{ m.sender_id }}</strong>
+                        <small class="text-muted">
+                            {{ m.created_at.strftime('%Y-%m-%d %H:%M') if m.created_at else '' }}
+                        </small>
+                    </div>
+                    {% if m.is_deleted %}
+                    <em class="text-muted">[حذف شده]</em>
+                    {% else %}
+                    <div class="mt-1">{{ m.content or '-' }}</div>
+                    {% endif %}
+                    <small class="text-secondary">نوع: {{ m.message_type }}
+                        {% if m.file_url %} — <a href="{{ m.file_url }}" target="_blank">فایل</a>{% endif %}
+                    </small>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">پیامی وجود ندارد</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}داشبورد{% endblock %}
+{% block content %}
+<h3 class="mb-4">داشبورد</h3>
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card bg-blue">
+            <i class="bi bi-people" style="font-size: 32px;"></i>
+            <h3>{{ stats.total_users }}</h3>
+            <p>کل کاربران</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-green">
+            <i class="bi bi-person-check" style="font-size: 32px;"></i>
+            <h3>{{ stats.active_users }}</h3>
+            <p>کاربران فعال</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-orange">
+            <i class="bi bi-chat-square-text" style="font-size: 32px;"></i>
+            <h3>{{ stats.total_chats }}</h3>
+            <p>کل چت‌ها</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-purple">
+            <i class="bi bi-envelope" style="font-size: 32px;"></i>
+            <h3>{{ stats.total_messages }}</h3>
+            <p>کل پیام‌ها</p>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header bg-white"><strong>آخرین کاربران</strong></div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead><tr>
+                <th>ID</th><th>شماره تلفن</th><th>نام نمایشی</th>
+                <th>وضعیت</th><th>تاریخ ثبت‌نام</th>
+            </tr></thead>
+            <tbody>
+                {% for u in recent_users %}
+                <tr>
+                    <td>{{ u.id }}</td>
+                    <td>{{ u.phone_number }}</td>
+                    <td>{{ u.display_name or '-' }}</td>
+                    <td>
+                        {% if u.is_active %}<span class="badge bg-success">فعال</span>
+                        {% else %}<span class="badge bg-danger">غیرفعال</span>{% endif %}
+                    </td>
+                    <td>{{ u.created_at.strftime('%Y-%m-%d %H:%M') if u.created_at else '-' }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" class="text-center text-muted py-3">کاربری یافت نشد</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

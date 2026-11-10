@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}چت‌ها{% endblock %}
+{% block content %}
+<h3 class="mb-4">چت‌ها</h3>
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead><tr>
+                <th>ID</th><th>نوع</th><th>عنوان</th>
+                <th>تعداد اعضا</th><th>تاریخ ایجاد</th><th>عملیات</th>
+            </tr></thead>
+            <tbody>
+                {% for c in chats %}
+                <tr>
+                    <td>{{ c.id }}</td>
+                    <td>
+                        {% if c.type == 'private' %}<span class="badge bg-primary">خصوصی</span>
+                        {% elif c.type == 'group' %}<span class="badge bg-success">گروه</span>
+                        {% else %}<span class="badge bg-warning">کانال</span>{% endif %}
+                    </td>
+                    <td>{{ c.title or '-' }}</td>
+                    <td>{{ c.members | length }}</td>
+                    <td>{{ c.created_at.strftime('%Y-%m-%d %H:%M') if c.created_at else '-' }}</td>
+                    <td>
+                        <a href="/panel/chats/{{ c.id }}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i> مشاهده
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="text-center text-muted py-4">چتی یافت نشد</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

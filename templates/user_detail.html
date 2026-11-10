@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}کاربر {{ user.id }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h3>جزئیات کاربر #{{ user.id }}</h3>
+    <a href="/panel/users" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-right"></i> بازگشت
+    </a>
+</div>
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-white"><strong>اطلاعات پایه</strong></div>
+            <div class="card-body">
+                <p><strong>شماره تلفن:</strong> {{ user.phone_number }}</p>
+                <p><strong>تاریخ ثبت‌نام:</strong>
+                    {{ user.created_at.strftime('%Y-%m-%d %H:%M') if user.created_at else '-' }}</p>
+                <p><strong>وضعیت:</strong>
+                    {% if user.is_active %}<span class="badge bg-success">فعال</span>
+                    {% else %}<span class="badge bg-danger">غیرفعال</span>{% endif %}
+                </p>
+                {% if user.otp_code %}
+                <div class="alert alert-info">
+                    <strong>کد OTP فعال:</strong>
+                    <code style="font-size: 22px; letter-spacing: 4px;">{{ user.otp_code }}</code>
+                    <br><small>انقضا: {{ user.otp_expires_at.strftime('%Y-%m-%d %H:%M') if user.otp_expires_at else '-' }}</small>
+                </div>
+                {% endif %}
+                <form method="post" action="/panel/users/{{ user.id }}/generate-otp">
+                    <button class="btn btn-info"><i class="bi bi-key"></i> ساخت کد OTP جدید</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-white"><strong>ویرایش کاربر</strong></div>
+            <div class="card-body">
+                <form method="post" action="/panel/users/{{ user.id }}">
+                    <div class="mb-3">
+                        <label class="form-label">نام نمایشی</label>
+                        <input type="text" name="display_name" value="{{ user.display_name or '' }}" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">دسترسی‌ها (JSON)</label>
+                        <textarea name="permissions" class="form-control" rows="6"
+                                  dir="ltr" style="font-family: monospace;">{{ (user.permissions or {}) | tojson(indent=2) }}</textarea>
+                        <small class="text-muted">
+                            مثال: {"voice_call": true, "video_call": false, "send_file": true}
+                        </small>
+                    </div>
+                    <button class="btn btn-primary"><i class="bi bi-save"></i> ذخیره</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
